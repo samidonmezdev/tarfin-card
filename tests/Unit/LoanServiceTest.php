@@ -44,26 +44,26 @@ class LoanServiceTest extends TestCase
 
         // 3. Assert ✅
         $this->assertDatabaseHas(Loan::class, [
-            'id'                 => $loan->id,
-            'user_id'            => $this->customer->id,
-            'amount'             => $amount,
-            'terms'              => $terms,
+            'id' => $loan->id,
+            'user_id' => $this->customer->id,
+            'amount' => $amount,
+            'terms' => $terms,
             'outstanding_amount' => $amount,
-            'currency_code'      => $currencyCode,
-            'processed_at'       => $processedAt,
-            'status'             => PaymentStatus::DUE,
+            'currency_code' => $currencyCode,
+            'processed_at' => $processedAt,
+            'status' => PaymentStatus::DUE,
         ]);
 
         $this->assertCount($terms, $loan->scheduledRepayments);
 
         foreach ($loan->scheduledRepayments as $index => $scheduledRepayment) {
             $this->assertDatabaseHas(ScheduledRepayment::class, [
-                'loan_id'            => $loan->id,
-                'amount'             => $scheduledRepaymentAmounts[$index],
+                'loan_id' => $loan->id,
+                'amount' => $scheduledRepaymentAmounts[$index],
                 'outstanding_amount' => $scheduledRepaymentAmounts[$index],
-                'currency_code'      => $currencyCode,
-                'due_date'           => $processedAt->clone()->addMonth($index + 1),
-                'status'             => PaymentStatus::DUE,
+                'currency_code' => $currencyCode,
+                'due_date' => $processedAt->clone()->addMonth($index + 1),
+                'status' => PaymentStatus::DUE,
             ]);
         }
 
@@ -94,42 +94,42 @@ class LoanServiceTest extends TestCase
         // 3. Assert ✅
         // Assert loan values
         $this->assertDatabaseHas(Loan::class, [
-            'id'                 => $loan->id,
-            'user_id'            => $this->customer->id,
-            'amount'             => 5000,
+            'id' => $loan->id,
+            'user_id' => $this->customer->id,
+            'amount' => 5000,
             'outstanding_amount' => 5000 - 1666,
-            'currency_code'      => $currencyCode,
-            'status'             => PaymentStatus::DUE,
-            'processed_at'       => Carbon::parse('2022-01-20'),
+            'currency_code' => $currencyCode,
+            'status' => PaymentStatus::DUE,
+            'processed_at' => Carbon::parse('2022-01-20'),
         ]);
 
         // Asserting First Scheduled Repayment is Repaid
         $this->assertDatabaseHas(ScheduledRepayment::class, [
-            'loan_id'            => $loan->id,
-            'amount'             => 1666,
+            'loan_id' => $loan->id,
+            'amount' => 1666,
             'outstanding_amount' => 0,
-            'currency_code'      => $currencyCode,
-            'due_date'           => Carbon::parse('2022-02-20'),
-            'status'             => PaymentStatus::REPAID,
+            'currency_code' => $currencyCode,
+            'due_date' => Carbon::parse('2022-02-20'),
+            'status' => PaymentStatus::REPAID,
         ]);
 
         // Asserting Second and Third Scheduled Repayments are still due
         $this->assertDatabaseHas(ScheduledRepayment::class, [
-            'status'   => PaymentStatus::DUE,
+            'status' => PaymentStatus::DUE,
             'due_date' => Carbon::parse('2022-03-20'),
         ]);
 
         $this->assertDatabaseHas(ScheduledRepayment::class, [
-            'status'   => PaymentStatus::DUE,
+            'status' => PaymentStatus::DUE,
             'due_date' => Carbon::parse('2022-04-20'),
         ]);
 
         // Asserting Received Repayment
         $this->assertDatabaseHas(ReceivedRepayment::class, [
-            'loan_id'       => $loan->id,
-            'amount'        => 1666,
+            'loan_id' => $loan->id,
+            'amount' => 1666,
             'currency_code' => $currencyCode,
-            'received_at'   => $receivedAt,
+            'received_at' => $receivedAt,
         ]);
     }
 
@@ -152,7 +152,7 @@ class LoanServiceTest extends TestCase
 
         foreach ($loan->scheduledRepayments->take(2) as $scheduledRepayment) {
             $scheduledRepayment->update([
-                'status'             => PaymentStatus::REPAID,
+                'status' => PaymentStatus::REPAID,
                 'outstanding_amount' => 0,
             ]);
         }
@@ -168,31 +168,31 @@ class LoanServiceTest extends TestCase
         // 3. Assert ✅
         // Asserting Loan values
         $this->assertDatabaseHas(Loan::class, [
-            'id'                 => $loan->id,
-            'user_id'            => $this->customer->id,
-            'amount'             => 5000,
+            'id' => $loan->id,
+            'user_id' => $this->customer->id,
+            'amount' => 5000,
             'outstanding_amount' => 0,
-            'currency_code'      => $currencyCode,
-            'status'             => PaymentStatus::REPAID,
-            'processed_at'       => Carbon::parse('2022-01-20'),
+            'currency_code' => $currencyCode,
+            'status' => PaymentStatus::REPAID,
+            'processed_at' => Carbon::parse('2022-01-20'),
         ]);
 
         // Asserting Last Scheduled Repayment is Repaid
         $this->assertDatabaseHas(ScheduledRepayment::class, [
-            'loan_id'            => $loan->id,
-            'amount'             => 1668,
+            'loan_id' => $loan->id,
+            'amount' => 1668,
             'outstanding_amount' => 0,
-            'currency_code'      => $currencyCode,
-            'due_date'           => Carbon::parse('2022-04-20'),
-            'status'             => PaymentStatus::REPAID,
+            'currency_code' => $currencyCode,
+            'due_date' => Carbon::parse('2022-04-20'),
+            'status' => PaymentStatus::REPAID,
         ]);
 
         // Asserting Received Repayment
         $this->assertDatabaseHas(ReceivedRepayment::class, [
-            'loan_id'       => $loan->id,
-            'amount'        => 1668,
+            'loan_id' => $loan->id,
+            'amount' => 1668,
             'currency_code' => $currencyCode,
-            'received_at'   => Carbon::parse('2022-04-20'),
+            'received_at' => Carbon::parse('2022-04-20'),
         ]);
     }
 
@@ -221,41 +221,41 @@ class LoanServiceTest extends TestCase
         // 3. Assert ✅
         // Asserting Loan values
         $this->assertDatabaseHas(Loan::class, [
-            'id'                 => $loan->id,
-            'user_id'            => $this->customer->id,
-            'amount'             => 5000,
+            'id' => $loan->id,
+            'user_id' => $this->customer->id,
+            'amount' => 5000,
             'outstanding_amount' => 5000 - 2000,
-            'currency_code'      => $currencyCode,
-            'status'             => PaymentStatus::DUE,
-            'processed_at'       => Carbon::parse('2022-01-20'),
+            'currency_code' => $currencyCode,
+            'status' => PaymentStatus::DUE,
+            'processed_at' => Carbon::parse('2022-01-20'),
         ]);
 
         // Asserting First Scheduled Repayment is Repaid
         $this->assertDatabaseHas(ScheduledRepayment::class, [
-            'loan_id'            => $loan->id,
-            'amount'             => 1666,
+            'loan_id' => $loan->id,
+            'amount' => 1666,
             'outstanding_amount' => 0,
-            'currency_code'      => $currencyCode,
-            'due_date'           => Carbon::parse('2022-02-20'),
-            'status'             => PaymentStatus::REPAID,
+            'currency_code' => $currencyCode,
+            'due_date' => Carbon::parse('2022-02-20'),
+            'status' => PaymentStatus::REPAID,
         ]);
 
         // Asserting Second Scheduled Repayment is Partial
         $this->assertDatabaseHas(ScheduledRepayment::class, [
-            'loan_id'            => $loan->id,
-            'amount'             => 1666,
+            'loan_id' => $loan->id,
+            'amount' => 1666,
             'outstanding_amount' => 1332, // 1666 - (2000 - 1666)
-            'currency_code'      => $currencyCode,
-            'due_date'           => Carbon::parse('2022-03-20'),
-            'status'             => PaymentStatus::PARTIAL,
+            'currency_code' => $currencyCode,
+            'due_date' => Carbon::parse('2022-03-20'),
+            'status' => PaymentStatus::PARTIAL,
         ]);
 
         // Asserting Received Repayment
         $this->assertDatabaseHas(ReceivedRepayment::class, [
-            'loan_id'       => $loan->id,
-            'amount'        => 2000,
+            'loan_id' => $loan->id,
+            'amount' => 2000,
             'currency_code' => $currencyCode,
-            'received_at'   => Carbon::parse('2022-02-20'),
+            'received_at' => Carbon::parse('2022-02-20'),
         ]);
     }
 
@@ -287,9 +287,9 @@ class LoanServiceTest extends TestCase
     {
         // 1. Arrange 🏗
         $loan = Loan::factory()->create([
-                                            'status'             => PaymentStatus::REPAID,
-                                            'outstanding_amount' => 0,
-                                        ]);
+            'status' => PaymentStatus::REPAID,
+            'outstanding_amount' => 0,
+        ]);
 
         // 3. Assert ✅
         $this->expectException(AlreadyRepaidException::class);
@@ -306,10 +306,10 @@ class LoanServiceTest extends TestCase
     public function createLoanDataProvider(): array
     {
         return [
-            '5000TRY for 3 months'  => [3, 5000, CurrencyType::TRY, Carbon::now()->startOfMonth(), [1666, 1666, 1668]],
-            '5000LEU for 6 months'  => [6, 5000, CurrencyType::LEU, Carbon::now()->startOfMonth(), [833, 833, 833, 833, 833, 835]],
+            '5000TRY for 3 months' => [3, 5000, CurrencyType::TRY, Carbon::now()->startOfMonth(), [1666, 1666, 1668]],
+            '5000LEU for 6 months' => [6, 5000, CurrencyType::LEU, Carbon::now()->startOfMonth(), [833, 833, 833, 833, 833, 835]],
             '12345EUR for 6 months' => [6, 12345, CurrencyType::EUR, Carbon::now()->startOfMonth(), [2057, 2057, 2057, 2057, 2057, 2060]],
-            '4EUR for 3 months'     => [3, 4, CurrencyType::EUR, Carbon::now()->startOfMonth(), [1, 1, 2]],
+            '4EUR for 3 months' => [3, 4, CurrencyType::EUR, Carbon::now()->startOfMonth(), [1, 1, 2]],
         ];
     }
 }
