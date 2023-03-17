@@ -48,7 +48,6 @@ class TarfinCardTransactionControllerTest extends TestCase
         ];
         // 2. Act 🏋🏻‍
         $response = $this->json('POST', route('tarfin-cards.tarfin-card-transactions.store',['tarfin_card'=>$this->card ]), $body,);
-        dd($response);
         // 3. Assert ✅
         $response->assertStatus(201)->assertJsonStructure(['data' => [
             'amount', 'currency_code'
