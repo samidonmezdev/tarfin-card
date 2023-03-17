@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('loan_id')->constrained();
             $table->decimal('amount');
             $table->string('currency_code');
-            $table->dateTimeTz('received_at');
+            $table->dateTime('received_at')->nullable();
             $table->timestamps();
         });
     }
