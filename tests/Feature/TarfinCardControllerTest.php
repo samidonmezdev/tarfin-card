@@ -88,7 +88,13 @@ class TarfinCardControllerTest extends TestCase
      */
     public function a_customer_can_list_tarfin_cards(): void
     {
-
+        $response = $this->json('Get', route('tarfin-cards.index'));
+        // 3. Assert ✅
+        $response->assertStatus(200)->assertJsonStructure(['data'=>[
+            "*"=>[
+                'id', 'number', 'type', 'expiration_date', 'is_active'
+            ]
+        ]]);
     }
 
     /**
