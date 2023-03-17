@@ -20,8 +20,8 @@ return new class extends Migration
             $table->decimal('outstanding_amount');
             $table->string('currency_code');
             $table->string('status');
-            $table->date('processed_at');
-            $table->json('terms');
+            $table->dateTimeTz('processed_at');
+            $table->integer('terms');
             $table->timestamps();
         });
     }
