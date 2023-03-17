@@ -2,6 +2,8 @@
 
 namespace App\Facades;
 use App\Enums\PaymentStatus;
+use App\Exceptions\AlreadyRepaidException;
+use App\Exceptions\AmountHigherThanOutstandingAmountException;
 use App\Models\Loan;
 use App\Models\ReceivedRepayment;
 use App\Models\ScheduledRepayment;
@@ -38,6 +40,12 @@ class LoanFacade extends Facade
    }
 
     public static function repayLoan($loan, $receivedRepayment, $currencyCode, $receivedAt){
+       if ($loan->status == PaymentStatus::REPAID) {
+           throw new AlreadyRepaidException();
+       }
+       if ($loan->outstanding_amount < $receivedRepayment) {
+           throw  new AmountHigherThanOutstandingAmountException();
+       }
         $totalReceivedRepayment = $receivedRepayment;
         $repay = new ReceivedRepayment();
         $repay->loan_id = $loan->id;
